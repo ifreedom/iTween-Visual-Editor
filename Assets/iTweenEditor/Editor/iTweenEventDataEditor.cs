@@ -38,34 +38,39 @@ using Object = System.Object;
 public class iTweenEventDataEditor : Editor {
     class ObjectFieldHelper
     {
-		bool isObsolete = false;
 		MethodInfo mInfo;
+		Object[] args;
+
 	    public ObjectFieldHelper()
 	    {
 			string[] v = Application.unityVersion.Substring(0, Application.unityVersion.Length-2).Split('.');
 
 			if (int.Parse(v[0]) > 2 && int.Parse(v[1]) > 3)
 				{
-					mInfo = typeof(EditorGUILayout).GetMethod("ObjectField", new Type[] { typeof(Object), typeof(Type), typeof(Boolean) });
-					isObsolete = true;
+					mInfo = typeof(EditorGUILayout).GetMethod("ObjectField", new Type[] { typeof(UnityEngine.Object), typeof(System.Type), typeof(System.Boolean), typeof(UnityEngine.GUILayoutOption[]) });
+					args = new Object[4];
+					args[2] = true;
+					args[3] = null;
 				}
 			else
 				{
-					mInfo = typeof(EditorGUILayout).GetMethod("ObjectField", new Type[] { typeof(Object), typeof(Type) });
+					mInfo = typeof(EditorGUILayout).GetMethod("ObjectField", new Type[] { typeof(UnityEngine.Object), typeof(System.Type), typeof(UnityEngine.GUILayoutOption[]) });
+					args = new Object[3];
+					args[2] = null;
 				}
 	    }
-		public Object ObjectField(Object obj, System.Type type)
+		public UnityEngine.Object ObjectField(UnityEngine.Object obj, System.Type type)
 		{
-			if (isObsolete)
-				return mInfo.Invoke(null, new Object[]{ obj, type, true });
-			else
-				return mInfo.Invoke(null, new Object[]{ obj, type });
+			args[0] = obj;
+			args[1] = type;
+
+			return mInfo.Invoke(null, args) as UnityEngine.Object;
 		}
     }
 
     static ObjectFieldHelper helper = new ObjectFieldHelper();
 
-	static Object ObjectField(Object obj, System.Type type)
+	static UnityEngine.Object ObjectField(UnityEngine.Object obj, System.Type type)
 	{
 		return helper.ObjectField(obj, type);
 	}
