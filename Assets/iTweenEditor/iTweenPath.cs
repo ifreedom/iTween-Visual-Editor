@@ -1,6 +1,7 @@
 //by Bob Berkebile : Pixelplacement : http://www.pixelplacement.com
 
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public class iTweenPath : MonoBehaviour
@@ -14,7 +15,7 @@ public class iTweenPath : MonoBehaviour
 	public bool initialized = false;
 	public string initialName = "";
 
-	void CalcRealNodes()
+    public void CalcRealNodes()
 	{
 		realNodes = new Vector3[nodes.Count];
 		for (int i=0; i<realNodes.Length; i++)
@@ -41,7 +42,8 @@ public class iTweenPath : MonoBehaviour
 	void OnDrawGizmosSelected(){
 		if(enabled) { // dkoontz
 			if(nodes.Count > 0){
-				CalcRealNodes();
+			    if (!Application.isPlaying)
+				  CalcRealNodes();
 				iTween.DrawPath(realNodes, pathColor);
 			}
 		} // dkoontz
@@ -78,9 +80,9 @@ public class iTweenPath : MonoBehaviour
 	public static Vector3[] GetPathReversed(string requestedName){
 		requestedName = requestedName.ToLower();
 		if(paths.ContainsKey(requestedName)){
-			List<Vector3>  revNodes = paths[requestedName].realNodes.GetRange(0,paths[requestedName].realNodes.Count);
-			revNodes.Reverse();
-			return revNodes.ToArray();
+		    Vector3[] revNodes = (Vector3[])paths[requestedName].realNodes.Clone();
+			Array.Reverse(revNodes);
+			return revNodes;
 		}else{
 			Debug.Log("No path with that name (" + requestedName + ") exists! Are you sure you wrote it correctly?");
 			return null;
