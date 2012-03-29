@@ -83,20 +83,23 @@ public class iTweenPathEditor : Editor
 	}
 
 	void OnSceneGUI(){
-		if(_target.enabled) { // dkoontz
+	  if (!Application.isPlaying)
+		{
+		  if(_target.enabled) { // dkoontz
 			if(_target.nodes.Count > 0){
-				//allow path adjustment undo:
-				Undo.SetSnapshotTarget(_target,"Adjust iTween Path");
+			  //allow path adjustment undo:
+			  Undo.SetSnapshotTarget(_target,"Adjust iTween Path");
 
-				//path begin and end labels:
-				Handles.Label(_target.GetRealPos(0), "'" + _target.pathName + "' Begin", style);
-				Handles.Label(_target.GetRealPos(_target.nodes.Count-1), "'" + _target.pathName + "' End", style);
+			  //path begin and end labels:
+			  Handles.Label(_target.GetRealPos(0), "'" + _target.pathName + "' Begin", style);
+			  Handles.Label(_target.GetRealPos(_target.nodes.Count-1), "'" + _target.pathName + "' End", style);
 
-				// node handle display:
-				for (int i = 0; i < _target.nodes.Count; i++) {
-					_target.nodes[i] = CalcPos(Handles.PositionHandle(_target.GetRealPos(i), Quaternion.identity));
-				}
+			  // node handle display:
+			  for (int i = 0; i < _target.nodes.Count; i++) {
+				_target.nodes[i] = CalcPos(Handles.PositionHandle(_target.GetRealPos(i), Quaternion.identity));
+			  }
 			}
-		} // dkoontz
+		  } // dkoontz
+		}
 	}
 }
