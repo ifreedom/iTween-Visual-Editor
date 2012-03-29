@@ -27,6 +27,11 @@ public class iTweenPath : MonoBehaviour
 		paths[pathName.ToLower()] = this;
 		CalcRealNodes();
 	}
+	void OnDisable()
+	{
+	  paths.Remove(pathName.ToLower());
+	  realNodes = null;
+	}
 
 	public Vector3 GetRealPos(int idx)
 	{
@@ -42,12 +47,42 @@ public class iTweenPath : MonoBehaviour
 		} // dkoontz
 	}
 
+	/// <summary>
+	/// Returns the visually edited path as a Vector3 array.
+	/// </summary>
+	/// <param name="requestedName">
+	/// A <see cref="System.String"/> the requested name of a path.
+	/// </param>
+	/// <returns>
+	/// A <see cref="Vector3[]"/>
+	/// </returns>
 	public static Vector3[] GetPath(string requestedName){
 		requestedName = requestedName.ToLower();
 		if(paths.ContainsKey(requestedName)){
 			return paths[requestedName].realNodes;
 		}else{
-			Debug.Log("No path with that name exists! Are you sure you wrote it correctly?");
+			Debug.Log("No path with that name (" + requestedName + ") exists! Are you sure you wrote it correctly?");
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// Returns the reversed visually edited path as a Vector3 array.
+	/// </summary>
+	/// <param name="requestedName">
+	/// A <see cref="System.String"/> the requested name of a path.
+	/// </param>
+	/// <returns>
+	/// A <see cref="Vector3[]"/>
+	/// </returns>
+	public static Vector3[] GetPathReversed(string requestedName){
+		requestedName = requestedName.ToLower();
+		if(paths.ContainsKey(requestedName)){
+			List<Vector3>  revNodes = paths[requestedName].realNodes.GetRange(0,paths[requestedName].realNodes.Count);
+			revNodes.Reverse();
+			return revNodes.ToArray();
+		}else{
+			Debug.Log("No path with that name (" + requestedName + ") exists! Are you sure you wrote it correctly?");
 			return null;
 		}
 	}
